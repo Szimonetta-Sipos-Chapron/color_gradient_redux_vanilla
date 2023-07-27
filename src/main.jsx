@@ -1,35 +1,42 @@
 // == Imports
-import { randomHexColor, generateSpanColor } from './utils/color';
+import { generateSpanColor } from './utils/color';
+
+// juste en précisant le nom du dossier, il va aller chercher l'import dans index.js
+import store from './store';
 
 import './styles/index.scss';
+import { 
+  CHANGE_ALL_COLORS, 
+  CHANGE_FIRST_COLOR, 
+  CHANGE_LAST_COLOR,
+  CHANGE_DIRECTION,
+} from './store/reducers/gradientReducer';
 
 // == State
-const state = {
-  firstColor: '#e367a4',
-  lastColor: '#48b1f3',
-  direction: '90deg',
-  nbColors: 0,
-};
+console.log(store.getState());
 
-console.log(state);
+// DISPATCH = demander au store de faire une action
+// store.dispatch({ type: 'CHANGE_FIRST_COLOR' });
+// console.log(store.getState());
 
 // == Rendu dans le DOM
 function renderNbColors() {
-  const { nbColors } = state;
+  const { nbColors } = store.getState().gradient;
 
-  document.querySelector('.nbColors').innerHTML = `
-    ${nbColors} couleur(s) générée(s)
-  `;
+  document.querySelector('.nbColors').innerHTML = 
+  `${nbColors} couleur(s) générée(s)`;
 }
+
 function renderGradient() {
-  const { direction, firstColor, lastColor } = state;
+  const { direction, firstColor, lastColor } = store.getState().gradient;
 
   document.querySelector('.gradient').style.background = `
     linear-gradient(${direction},${firstColor},${lastColor})
   `;
 }
+
 function renderColors() {
-  const { firstColor, lastColor } = state;
+  const { firstColor, lastColor } = store.getState().gradient;
 
   const firstSpan = generateSpanColor(firstColor);
   const lastSpan = generateSpanColor(lastColor);
@@ -44,52 +51,58 @@ renderNbColors();
 renderGradient();
 renderColors();
 
+store.subscribe(() => {
+  renderNbColors();
+  renderGradient();
+  renderColors();
+});
+
 // == Controls
 document.getElementById('randAll').addEventListener('click', () => {
   // debug
   console.log('Random all colors');
   // data
-  state.nbColors += 2;
-  state.firstColor = randomHexColor();
-  state.lastColor = randomHexColor();
-  // ui
-  renderNbColors();
-  renderGradient();
-  renderColors();
+  store.dispatch(CHANGE_ALL_COLORS());
 });
 
 document.getElementById('randFirst').addEventListener('click', () => {
   // data
-  state.nbColors += 1;
-  state.firstColor = randomHexColor();
-  // ui
-  renderNbColors();
-  renderGradient();
-  renderColors();
+
+  // on veut que le click du bouton déclenche une action de notre store
+  store.dispatch(CHANGE_FIRST_COLOR());
 });
 
 document.getElementById('randLast').addEventListener('click', () => {
   // data
-  state.nbColors += 1;
-  state.lastColor = randomHexColor();
-  // ui
-  renderNbColors();
-  renderGradient();
-  renderColors();
+  store.dispatch(CHANGE_LAST_COLOR());
 });
 
 document.getElementById('toLeft').addEventListener('click', () => {
   // data
-  state.direction = '270deg';
-  // ui
-  renderGradient();
-  renderColors();
+  store.dispatch(CHANGE_DIRECTION('270deg'));
 });
 
 document.getElementById('toRight').addEventListener('click', () => {
   // data
-  state.direction = '90deg';
-  // ui
-  renderGradient();
-  renderColors();
+  store.dispatch(CHANGE_DIRECTION('90deg'));
+});
+
+document.getElementById('to45').addEventListener('click', () => {
+  // data
+  store.dispatch(CHANGE_DIRECTION('45deg'));
+});
+
+document.getElementById('to135').addEventListener('click', () => {
+  // data
+  store.dispatch(CHANGE_DIRECTION('135deg'));
+});
+
+document.getElementById('to225').addEventListener('click', () => {
+  // data
+  store.dispatch(CHANGE_DIRECTION('225deg'));
+});
+
+document.getElementById('to315').addEventListener('click', () => {
+  // data
+  store.dispatch(CHANGE_DIRECTION('315deg'));
 });

@@ -1,6 +1,4 @@
-import { TColor } from '../@types';
-
-export function randomHexColor(): TColor {
+export function randomHexColor() {
   /*
     Math.random() → retourne un nombre pseudo-aléatoire entre [0, 1[
     toString(16) → convertit le nombre en chaine de caractère sur une base hexadécimale
@@ -17,7 +15,7 @@ export function randomHexColor(): TColor {
   return `#${Math.random().toString(16).slice(2, 8)}`;
 }
 
-export function generateSpanColor(color: TColor) {
+export function generateSpanColor(color) {
   return `
     <span style="color:${color}">${color}</span>
   `;
